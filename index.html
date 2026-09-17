@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boutique Store</title>
+<link id="favicon-link" rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-banner" id="mount-banner"></div>
+
+<header>
+  <div class="wrap header-row">
+    <div class="logo" id="mount-logo"></div>
+    <nav class="primary-nav">
+      <a href="#catalog">New Arrivals</a>
+      <a href="#catalog">Categories</a>
+      <a href="#location">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="theme-toggle" aria-label="Toggle dark or light theme" title="Toggle theme">◐</button>
+      <button class="icon-btn hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<nav class="drawer" id="drawer" aria-label="Mobile navigation">
+  <button class="drawer-close" id="drawer-close" aria-label="Close menu">✕</button>
+  <a href="#catalog">New Arrivals</a>
+  <a href="#catalog">Categories</a>
+  <a href="#location">Contact</a>
+</nav>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1 id="mount-hero-headline"></h1>
+      <p class="lead" id="mount-hero-subtitle"></p>
+      <div class="hero-ctas">
+        <a href="#catalog" class="btn btn-primary" id="mount-hero-cta-primary"></a>
+        <a href="#location" class="btn btn-outline" id="mount-hero-cta-secondary"></a>
+      </div>
+    </div>
+    <div class="hero-swatches" id="mount-hero-swatches"></div>
+  </div>
+</section>
+
+<section class="trust-strip">
+  <div class="wrap trust-row" id="mount-trust-row"></div>
+</section>
+
+<section class="catalog wrap" id="catalog">
+  <div class="catalog-head">
+    <div>
+      <h2>Shop the catalogue</h2>
+      <p>Fresh pieces, restocked weekly — tap any item to order straight on WhatsApp.</p>
+    </div>
+  </div>
+  <div class="filter-tabs" id="filter-tabs"></div>
+  <div class="product-grid" id="product-grid"></div>
+</section>
+
+<section class="location" id="location">
+  <div class="wrap location-grid">
+    <div>
+      <h2>Find us</h2>
+      <ul class="info-list" id="mount-info-list"></ul>
+      <div class="badges" id="mount-badges"></div>
+    </div>
+    <div class="map-block">
+      <iframe id="mount-map-frame" class="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Store location map"></iframe>
+      <div class="map-caption" id="mount-map-caption"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="footer-row">
+    <div class="footer-brand" id="mount-footer-brand"></div>
+    <div class="social-links" id="mount-social-links"></div>
+  </div>
+  <div class="copyright">© <span id="year"></span> <span id="mount-copyright-name"></span>. All rights reserved.</div>
+</footer>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
