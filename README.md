@@ -106,3 +106,4 @@ Plain static files, no build step — any static host works.
 - No environment variables, no build step, no server.
 - The dark/light preference and the cached Google Sheet are stored in the visitor's own browser (`localStorage`); nothing is sent anywhere.
 - Sample photos in `images/` are for testing only (one has a watermark, one is a retailer's product photo). Replace them with the client's own.
+"# House_Of_Fayt_Boutique_Template" 
