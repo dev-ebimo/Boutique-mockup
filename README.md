@@ -1,69 +1,108 @@
 # Boutique Store Template
 
-A reusable, no-backend storefront template: static HTML/CSS/JS, WhatsApp-based
-ordering, no database, no auth, no payment gateway. Reskin it per client by
-editing **`config.js`** only.
+A reusable, no-backend storefront: static HTML/CSS/JS, WhatsApp-based ordering, no database,
+no auth, no payment gateway. Reskin it per client by editing **`config.js`** only.
 
 ## Files
 
-- `index.html` — page structure (you shouldn't need to touch this for a reskin)
-- `style.css` — all styling, driven by CSS variables set from `config.js`
-- `config.js` — **everything client-specific**: store name, colors, copy, products, contact info, WhatsApp number
-- `app.js` — renders the page from `config.js` and handles filtering, ordering, theme toggle, mobile menu
+| File | What it is | Edit it? |
+|---|---|---|
+| `config.js` | **Everything client-specific**: name, theme, text, photos, products, contact info, WhatsApp number | **Yes — this is the only one** |
+| `images/` | Client photos (products, hero, logo, about) | Add files here |
+| `index.html` | Page structure | No (SEO tags are written into it by `build-seo.js`) |
+| `style.css` | All styling (mobile-first) | No |
+| `app.js` | Renders the page, product popup, filters, ordering, Google Sheet loading | No |
+| `themes.js`, `boot.js` | The three built-in designs and the code that applies them | No |
+| `build-seo.js` | Writes search/link-preview tags + `robots.txt` + `sitemap.xml` from `config.js` | Run it |
 
-## What changed in this revision
+## Setting up a new client (about 30 minutes once you have their content)
 
-- **Default look is now light and minimalist** (off-white, near-black type, muted gold) instead of navy — reads as a boutique, not a SaaS dashboard. The dark/gold palette is still there as the toggle's alternate mode, not the default.
-- **Real map embed.** The location section now embeds an actual Google Maps view of `address` from `config.js` (no API key needed) instead of a fake CSS grid with a CSS pin.
-- **Single primary CTA in the hero** by default (`heroSecondaryCta` is `""`) — two competing full-width buttons crowded the mobile view. Set `heroSecondaryCta` if a client genuinely needs a second action.
-- **Mobile fixes:** the headline and CTA now load before the decorative swatches on small screens (previously the swatches jumped above the headline); category filter tabs scroll horizontally on mobile instead of wrapping into messy multi-row stacks; hero padding is tighter on small screens.
-- **Hyper-local trust badges** by default — named neighborhoods instead of generic "100% quality guaranteed" filler.
-- **Favicon** is now a generated initial-letter mark instead of an emoji.
+**Get from the client first:** logo (optional), product photos, names + prices (+ sizes/colours if any),
+WhatsApp number, address, opening hours, Instagram/Facebook links, 2–3 sentences about the business.
 
-**On product photos:** the built-in "swatch" patterns are deliberately gradient placeholders, not real photos — a boutique's actual stock is the one thing a template can't guess. We deliberately did **not** hotlink random stock-photo URLs here: stock-photo hotlinking services are unreliable (several are fully shut down and return broken images), and a broken `<img>` icon looks worse than a clean placeholder. Instead, `config.js` fully supports real photos: set `image` on any product to a URL (or a path to a photo you host alongside these files) and it replaces the swatch immediately — see step 5 below. For client delivery, plan on the store owner supplying real product photos before launch, same as they'd supply their WhatsApp number and prices.
+1. Open `config.js` and work top to bottom. Every option has a comment explaining it.
+2. Pick a look with `theme: "classic" | "modern" | "soft" | "fayt"`. Optionally tweak colors in `colors`.
+3. Put photos in `images/` and refer to them by file name (`image: "senator.jpg"`). Keep each under ~300 KB;
+   portrait or square photos look best (cards are 4:5).
+4. Replace `products` (or connect a Google Sheet — see below).
+5. Set `siteUrl` to the live address, then run:
+   ```bash
+   node build-seo.js
+   ```
+6. Test (below), deploy, send the client the link.
 
-## Reskinning for a new client
+## What's in the template
 
-1. Open `config.js`.
-2. Update `storeName`, `bannerText`, `heroHeadline`, `heroSubtitle`.
-3. Set `whatsappNumber` to the client's real number (digits only, country code first — e.g. `2348012345678`).
-4. Update `address`, `phoneDisplay`, `hours`, `mapCaption`.
-5. Replace the `products` array with the client's real catalogue. Each product needs `name`, `price`, `category` (must match a value in `categories`), and either a `swatch` number (1–6, built-in pattern placeholders) or an `image` URL.
-6. Optionally change `categories` if the client's product types differ from Women/Men/Accessories.
-7. Optionally change `colors.dark` / `colors.light` to match the client's brand.
-8. Fill in `socials.instagram` / `socials.facebook` if they have them (leave `""` to hide).
+- **House of FAYT additions** — `fayt` theme (light cream + soft amber, dark mode stays dark), `logoImageDark` (light logo swapped in automatically in dark mode), `orderSteps` (a "How to order" section), and an empty `address` hides the map for online-only stores.
 
-Nothing else needs to change for a standard reskin.
+- **Three designs** — `classic` (warm off-white + gold), `modern` (black & white, sharp, uppercase),
+  `soft` (cream + terracotta, rounded). Each has light and dark mode; visitors can toggle.
+- **Photos from `config.js`** — product photos, an extra swipe gallery per product (`images: [...]`), hero photos,
+  logo, About photo. Blank or broken photos fall back to a pattern, never a broken-image icon.
+- **Product popup** — tap a product to see a big photo (swipeable), description, size and colour choice.
+  The choice goes into the WhatsApp message: *"…buying Blue Striped Button-Up (Size: L) priced at ₦18,500…"*.
+  Products with no sizes/colours order in one tap.
+- **Sold-out handling** — `inStock: false` greys the photo and turns the button into "Ask about restock".
+- **Floating chat button** — stays on screen on phones (`floatingButton`, `floatingMessage`).
+- **About section** — from `aboutText` (leave empty to hide it and its menu link).
+- **Editable wording** — section headings and menu labels live in `sections`.
+- **Tap-to-call and directions** — the address and phone number in "Find us" are links, plus Directions / Call buttons.
+- **Basic SEO** — page title, description, canonical link, WhatsApp/Facebook link preview (Open Graph),
+  local-business structured data, `robots.txt`, `sitemap.xml`.
+- **Mobile-first** — two-column product grid on phones, 44px+ tap targets, bottom-sheet popup,
+  swipeable filter tabs and gallery, safe-area padding for notched phones, no horizontal scroll (tested at 320–1280px).
+
+## Let the owner update products themselves (Google Sheet, optional)
+
+Without this, every price change means editing `config.js`. With it, the owner edits a spreadsheet and the site updates.
+
+1. Create a Google Sheet with this header row (first row, in any order):
+
+   `name | price | category | image | images | description | sizes | colors | badge | instock`
+
+2. One product per row. Prices can be plain numbers (`18500` becomes ₦18,500). Separate several sizes, colours or
+   extra photos with commas (`S, M, L`). `instock`: `yes` or `no`. New categories appear as filter tabs automatically.
+   Photos: file names from `images/`, or full URLs.
+3. **File → Share → Publish to web** → pick the sheet tab and **Comma-separated values (.csv)** → **Publish**.
+4. Paste the link into `productsSheetUrl` in `config.js`.
+
+If the sheet can't be reached, the site shows the last version it saw, then falls back to the `products` list in `config.js`.
+New photos still need to be added to the `images/` folder (or use hosted image URLs in the sheet).
+
+## SEO: what `build-seo.js` does and why you must run it
+
+WhatsApp, Facebook and Google's first pass read the raw HTML and do **not** run JavaScript, so the title, description and
+preview photo must be written into `index.html` itself. Run `node build-seo.js` after changing `storeName`, `seoTitle`,
+`seoDescription`, `siteUrl`, photos, hours or socials. (If you forget, `app.js` adds the basics at runtime so Google still
+sees them, but link previews will be missing.) Without `siteUrl` the script skips the canonical link, sitemap and
+preview photo and tells you so.
+
+After going live, add the site to **Google Search Console** and submit `sitemap.xml`, and create a **Google Business Profile**
+for the shop — that is what puts a local business on Google Maps and in "near me" searches.
 
 ## Test locally
 
-Any static file server works, e.g. from this folder:
+Any static file server works, from this folder:
 
 ```bash
 npx serve .
 ```
 
-or just open `index.html` directly in a browser (all features work without a server, since there's no backend).
+Opening `index.html` directly also works for everything except the Google Sheet option (browsers restrict it on `file://`).
+Always check on a real phone before handing over: product popup, a size choice, the chat button, and the WhatsApp message it opens.
 
-## Deploy on Vercel
+## Deploy
 
-**Option A — Vercel CLI (fastest)**
-```bash
-npm install -g vercel
-cd boutique-template
-vercel
-```
-Follow the prompts (set up and deploy → link to a new project → accept defaults, since this is a static site with no build step). Vercel will give you a live `.vercel.app` URL immediately, and `vercel --prod` promotes it to your production URL.
+Plain static files, no build step — any static host works.
 
-**Option B — Vercel dashboard**
-1. Push this folder to a GitHub repo.
-2. On vercel.com, click **New Project** → import the repo.
-3. Framework preset: **Other** (no build command, no output directory needed — it's already static).
-4. Click **Deploy**.
-
-**Custom domain:** add it under Project → Settings → Domains once deployed.
+- **Cloudflare Pages**, **Netlify** or **GitHub Pages** are free and allow commercial/client sites.
+- **Vercel's free (Hobby) plan is meant for non-commercial use**, so for paying clients use one of the above or Vercel's paid plan
+  (check Vercel's current terms). Vercel deploys with `vercel` from this folder, or by importing the repo with the framework preset **Other**.
+- **Custom domain:** add it in the host's dashboard; set `siteUrl` to it and re-run `node build-seo.js`.
+- File names are case-sensitive on most hosts: `Heels.JPG` is not `heels.jpg`.
 
 ## Notes
 
-- No environment variables, no build step, no server — it's plain static files, so any static host works (Vercel, Netlify, GitHub Pages).
-- The dark/light toggle preference is stored in the visitor's own browser (`localStorage`) — it does not sync between devices, which is expected for this kind of site.
+- No environment variables, no build step, no server.
+- The dark/light preference and the cached Google Sheet are stored in the visitor's own browser (`localStorage`); nothing is sent anywhere.
+- Sample photos in `images/` are for testing only (one has a watermark, one is a retailer's product photo). Replace them with the client's own.
